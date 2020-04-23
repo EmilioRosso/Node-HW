@@ -1,12 +1,10 @@
 const express = require("express");
-const dotenv = require("dotenv");
+const contactsRouter = require("./api/contacts/contacts.router");
 const cors = require("cors");
 
-const contactsRouter = require("./api/contacts/contacts.router.js");
+require("dotenv").config();
 
-dotenv.config();
-
-module.exports = class UserServer {
+class ContactsServer {
   constructor() {
     this.server = null;
   }
@@ -17,7 +15,7 @@ module.exports = class UserServer {
 
   initMiddleware() {
     this.server.use(express.json());
-    this.server.use(cors({ orign: "http://localhost:3000" }));
+    this.server.use(cors({ origin: "http://localhost:3000" }));
   }
 
   initRoutes() {
@@ -25,9 +23,9 @@ module.exports = class UserServer {
   }
 
   initListening() {
-    this.server.listen(process.env.PORT, () => {
-      console.log(`Server started on port ${process.env.PORT}`);
-    });
+    this.server.listen(process.env.PORT, () =>
+      console.log(`Srever started at ${process.env.PORT}`)
+    );
   }
 
   start() {
@@ -36,4 +34,6 @@ module.exports = class UserServer {
     this.initRoutes();
     this.initListening();
   }
-};
+}
+
+module.exports = ContactsServer;

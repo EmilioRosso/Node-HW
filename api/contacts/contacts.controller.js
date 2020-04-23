@@ -4,79 +4,100 @@ const Joi = require("joi");
 
 const { promises: fsPromises } = fs;
 
-const contactsPath = path.join(__dirname, "api/contacts/contacts.json");
+const contactsPath = path.resolve("api/contacts/contacts.json");
 
-function getUsersList(req, res, next) {
-  fsPromises
-    .readFile(contactsPath, "utf-8")
-    .then((data) => res.json(data))
-    .catch((error) => error);
+async function getUsersList(req, res, next) {
+  try {
+    const contacts = await fsPromises.readFile(contactsPath, "utf-8");
+    res.json(contacts);
+  } catch (error) {
+    next(error);
+  }
 }
 
-function getContactById(req, res, next) {
-  fsPromises
-    .readFile(contactsPath, "utf-8")
-    .then((contacts) => contacts.filter((elem) => elem.id === req.params.id))
-    .then((data) => res.json(data))
-    .catch((error) => error);
+async function getContactById(req, res, next) {
+  try {
+    const contacts = await fsPromises.readFile(contactsPath, "utf-8");
+    const contact = contacts.filter((elem) => elem.id === req.params.id);
+    res.json(contact);
+  } catch (error) {
+    next(error);
+  }
 }
 
 function validateCreateContact(req, res, next) {
   const createContactRules = Joi.object({
     name: Joi.string().required(),
     email: Joi.string().required(),
-    phoe: Joi.number().required(),
+    phone: Joi.string().required(),
   });
-  const validationResult = WebKitPoint.validate(req.body, createContactRules);
+  const validationResult = Joi.validate(req.body, createContactRules);
   if (validationResult.error) {
-    return res.status(400).send(validationResult.error);
+    next(error.message);
   }
   next();
 }
 
-function createContact(req, res, next) {
-  fsPromises
-    .appendFile(contactsPath, {
+async function createContact(req, res, next) {
+  try {
+    const newContact = JSON.stringify({
       ...req.body,
       id: Math.floor(Math.random() * 100 + 10),
-    })
-    .then(res.status(201).send())
-    .catch((error) => error);
+    });
+    await fsPromises.appendFile(contactsPath, newContact);
+    res.status(201).send(newContact);
+  } catch (error) {
+    next(error);
+  }
 }
 
-function deleteContact(req, res, next) {
-  fsPromises
-    .readFile(contactsPath, "utf-8")
-    .then((contacts) => {
-      const index = contacts.indexOf((elem) => elem.id === req.params.id);
-      const newContacts = contacts.splice(index, 1);
-      fsPromises.writeFile(contactsPath, JSON.stringify(newContacts));
-    })
-    .catch((error) => error);
+async function deleteContact(req, res, next) {
+  try {
+    const contacts = await fsPromises.readFile(contactsPath, "utf-8");
+    const index = contacts.indexOf((elem) => elem.id === req.params.id);
+    const newContacts = contacts.splice(index, 1);
+    await fsPromises.writeFile(contactsPath, JSON.stringify(newContacts));
+  } catch (error) {
+    next(error);
+  }
 }
 
 function validateUpdateContact(req, res, next) {
   const updateContactRules = Joi.object({
     name: Joi.string(),
     email: Joi.string(),
-    phone: Joi.number(),
+    phone: Joi.string(),
   });
-  const validationResult = WebKitPoint.validate(req.body, updateContactRules);
+  const validationResult = Joi.validate(req.body, updateContactRules);
   if (validationResult.error) {
-    return res.status(400).send(validationResult.error);
+    next(error.message);
   }
   next();
 }
 
-function updateContact(req, res, next) {
-  fsPromises
-    .readFile(contactsPath, "utf-8")
-    .then((contacts) => {
-      const index = contacts.indexOf((elem) => elem.id === req.params.id);
-      contacts[index] = { ...contacts[index], ...req.body };
-      fsPromises.writeFile(contactsPath, JSON.stringify(contacts));
-    })
-    .catch((error) => error);
+async function updateContact(req, res, next) {
+  try {
+    const contacts = fsPromises.readFile(contactsPath, "utf-8");
+    const index = contacts.indexOf((elem) => elem.id === req.params.id);
+    contacts[index] = { ...contacts[index], ...req.body };
+    await fsPromises.writeFile(contactsPath, JSON.stringify(contacts));
+  } catch (error) {
+    next(error);
+  }
+}
+
+function handleError(req, res, next) {
+  // console.log(req.status);
+  // console.log(error);
+  const newError = new CustomError(error.message);
+  return res.status(404).send(newError.message);
+}
+
+class CustomError extends Error {
+  constructor(message) {
+    super(message);
+    this.status = 404;
+  }
 }
 
 module.exports = {
@@ -87,4 +108,5 @@ module.exports = {
   deleteContact,
   validateUpdateContact,
   updateContact,
+  handleError,
 };
