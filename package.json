@@ -1,32 +1,27 @@
 {
-  "name": "Node-HW",
+  "name": "node-hw",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "joi": "^14.3.1",
-    "morgan": "^1.10.0",
-    "yargs": "^15.3.1"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.3"
-  },
   "scripts": {
-    "dev": "nodemon index.js",
+    "start": "node ./index.js",
+    "dev": "nodemon ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/EmilioRosso/Node-HW.git"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/EmilioRosso/Node-HW/issues"
   },
-  "homepage": "https://github.com/EmilioRosso/Node-HW#readme"
+  "homepage": "https://github.com/EmilioRosso/Node-HW#readme",
+  "dependencies": {
+    "yargs": "^15.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  }
 }
