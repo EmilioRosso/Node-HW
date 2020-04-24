@@ -38,6 +38,7 @@ function validateCreateContact(req, res, next) {
     phone: Joi.string().required(),
   });
   const validationResult = Joi.validate(req.body, createContactRules);
+
   if (validationResult.error) {
     next(error.message);
   }
@@ -47,13 +48,14 @@ function validateCreateContact(req, res, next) {
 async function createContact(req, res, next) {
   try {
     const contacts = await fsPromises.readFile(contactsPath, "utf-8");
-    const parsedContact = JSON.parse(contacts);
+    const parsedContacts = JSON.parse(contacts);
     const newContact = {
       ...req.body,
       id: Math.floor(Math.random() * 100 + 10),
     };
-    parsedContact.push(newContact);
-    await fsPromises.writeFile(contactsPath, JSON.stringify(parsedContact));
+    parsedContacts.push(newContact);
+    console.log(parsedContacts);
+    await fsPromises.writeFile(contactsPath, JSON.stringify(parsedContacts));
     res.status(201).send(newContact);
   } catch (error) {
     next(error);
@@ -64,12 +66,15 @@ async function deleteContact(req, res, next) {
   try {
     const contacts = await fsPromises.readFile(contactsPath, "utf-8");
     const parsedContacts = JSON.parse(contacts);
-    const index = parsedContacts.find(
+    const index = parsedContacts.findIndex(
       (elem) => elem.id === Number(req.params.contactId)
     );
-    parsedContacts.splice(index.id - 1, 1);
+    if (index === -1) {
+      next("No such contact");
+    }
+    parsedContacts.splice(index, 1);
     await fsPromises.writeFile(contactsPath, JSON.stringify(parsedContacts));
-    res.status(201).json(parsedContacts);
+    res.status(201).send("Deleted sucsessfully");
   } catch (error) {
     next(error);
   }
@@ -92,25 +97,23 @@ async function updateContact(req, res, next) {
   try {
     const contacts = await fsPromises.readFile(contactsPath, "utf-8");
     const parsedContacts = JSON.parse(contacts);
-    const index = parsedContacts.find(
+    const index = parsedContacts.findIndex(
       (elem) => elem.id === Number(req.params.contactId)
     );
 
-    if (!index) {
+    if (index === -1) {
       res.status(404).send("No such contact");
     }
-
-    console.log(req.body);
+    parsedContacts[index] = { ...parsedContacts[index], ...req.body };
 
     await fsPromises.writeFile(contactsPath, JSON.stringify(parsedContacts));
+    res.status(201).send("Created successfully");
   } catch (error) {
     next(error);
   }
 }
 
 function handleError(req, res, next) {
-  //console.log(req);
-  // console.log(error);
   const newError = new CustomError(req);
   return res.status(404).send(newError);
 }
