@@ -107,7 +107,7 @@ async function updateContact(req, res, next) {
     parsedContacts[index] = { ...parsedContacts[index], ...req.body };
 
     await fsPromises.writeFile(contactsPath, JSON.stringify(parsedContacts));
-    res.status(201).send("Created successfully");
+    res.status(201).send("Updated successfully");
   } catch (error) {
     next(error);
   }
