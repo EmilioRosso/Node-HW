@@ -1,4 +1,4 @@
-const contactsModel = require("./contact.models");
+const contactsModel = require("./contacts.models");
 const Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
 

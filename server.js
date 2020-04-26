@@ -1,7 +1,8 @@
 const express = require("express");
-const contactsRouter = require("./api/contacts/contact.router");
+const contactsRouter = require("./api/contacts/contacts.router");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 
 require("dotenv").config();
 
@@ -15,7 +16,7 @@ class ContactsServer {
   }
 
   initMiddleware() {
-    this.server.use(express.json());
+    this.server.use(bodyParser.json());
     this.server.use(cors({ origin: "http://localhost:3000" }));
   }
 
@@ -44,6 +45,7 @@ class ContactsServer {
     this.initMiddleware();
     this.initRoutes();
     this.initDB();
+
     this.initListening();
   }
 }
