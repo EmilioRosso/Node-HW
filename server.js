@@ -43,6 +43,7 @@ class ContactsServer {
   async start() {
     this.initServer();
     this.initMiddleware();
+    this.initDB();
     this.initRoutes();
     this.initDB();
     this.initListening();

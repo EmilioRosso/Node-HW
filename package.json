@@ -1,5 +1,5 @@
 {
-  "name": "node-hw",
+  "name": "Node-HW",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,6 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/EmilioRosso/Node-HW.git"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
@@ -19,6 +20,10 @@
   },
   "homepage": "https://github.com/EmilioRosso/Node-HW#readme",
   "dependencies": {
+    "joi-objectid": "^3.0.1",
+    "mongodb": "^3.5.6",
+    "mongoose": "^5.9.10",
+    "morgan": "^1.10.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",

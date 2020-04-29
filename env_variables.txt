@@ -1,2 +1,6 @@
 PORT = 3000
+<<<<<<< HEAD
 MONGODB_LINK=mongodb+srv://EmilioRosso:Glorious7@cluster0-uztsz.mongodb.net/test?retryWrites=true&w=majority
+=======
+MONGODB_LINK=mongodb+srv://EmilioRosso:Glorious7@cluster0-uztsz.mongodb.net/db_contacts?retryWrites=true&w=majority
+>>>>>>> a9f42fbc2de93ff2e959047e51157da02cfcfa0c
