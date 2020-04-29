@@ -1,5 +1,6 @@
 const express = require("express");
 const contactsRouter = require("./api/contacts/contacts.router");
+const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 
@@ -23,15 +24,26 @@ class ContactsServer {
     this.server.use("/contacts", contactsRouter);
   }
 
+  async initDB() {
+    try {
+      await mongoose.connect(process.env.MONGODB_LINK);
+      console.log("Database connection successful");
+    } catch (error) {
+      console.log("Database connection ERROR");
+      process.exit(1);
+    }
+  }
+
   initListening() {
     this.server.listen(process.env.PORT, () =>
       console.log(`Srever started at ${process.env.PORT}`)
     );
   }
 
-  start() {
+  async start() {
     this.initServer();
     this.initMiddleware();
+    this.initDB();
     this.initRoutes();
     this.initListening();
   }
