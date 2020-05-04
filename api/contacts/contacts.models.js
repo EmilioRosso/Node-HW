@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
+
 const {
   Schema,
   Types: { ObjectId },
@@ -21,7 +23,12 @@ const contactsSchema = new Schema({
     unique: true,
     validate: (value) => value.length >= 10,
   },
+  subscription: {
+    type: String,
+  },
 });
+
+contactsSchema.plugin(mongoosePaginate);
 
 const contactsModel = mongoose.model("Contacts", contactsSchema);
 
