@@ -34,6 +34,7 @@ async function registerUser(req, res, next) {
       email,
       password,
       subscription,
+      avatarURL: `http://localhost:${process.env.PORT}/${req.file.path}`,
       token: null,
     });
 
@@ -41,6 +42,7 @@ async function registerUser(req, res, next) {
       id: newUser._id,
       email: newUser.email,
       subscription: newUser.subscription,
+      avatarURL: newUser.avatarURL,
     });
   } catch (error) {
     next(new CustomError(400, error.message));

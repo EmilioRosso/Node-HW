@@ -16,7 +16,6 @@ async function checkToken(req, res, next) {
     const decoded = jwt.decode(token);
     const existingUser = await usersModel.findById(decoded.id);
     if (!existingUser) {
-      console.log("hoy");
       next(new CustomError(400, "User not found"));
     }
 
@@ -40,6 +39,7 @@ async function updateCurrentUser(req, res, next) {
   await usersModel.findByIdAndUpdate(req.user._id, {
     email: req.body.email || req.user.email,
     subscription: req.body.subscription || req.user.subscription,
+    avatarURL: req.file.path || req.user.avatarURL,
   });
 
   res.status(201).send("Updated successfully");

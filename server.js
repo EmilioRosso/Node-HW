@@ -20,6 +20,7 @@ class ContactsServer {
 
   initMiddleware() {
     this.server.use(bodyParser.json());
+    this.server.use(express.static("public"));
     this.server.use(cors({ origin: "http://localhost:3000" }));
   }
 
