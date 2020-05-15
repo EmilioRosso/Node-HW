@@ -15,8 +15,8 @@ usersRouter.get(
 usersRouter.patch(
   "/",
   upload.single("avatar"),
-  minifyImage,
   usersController.checkToken,
+  minifyImage,
   usersController.updateCurrentUser,
   usersController.handleUserErrors
 );

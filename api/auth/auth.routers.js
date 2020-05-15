@@ -10,7 +10,6 @@ authRouter.post(
   upload.single("avatar"),
   minifyImage,
   authController.validateRegisterUser,
-
   authController.registerUser,
   authController.handleUserErrors
 );
