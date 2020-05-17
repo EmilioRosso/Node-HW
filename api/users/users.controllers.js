@@ -16,7 +16,6 @@ async function checkToken(req, res, next) {
     const decoded = jwt.decode(token);
     const existingUser = await usersModel.findById(decoded.id);
     if (!existingUser) {
-      console.log("hoy");
       next(new CustomError(400, "User not found"));
     }
 
@@ -36,13 +35,22 @@ async function getCurrentUser(req, res, next) {
 async function updateCurrentUser(req, res, next) {
   if (req.body.password || req.body.token || req.body._id) {
     next(new CustomError(400, "You cannot change this properties"));
+  } else {
+    try {
+      await usersModel.findByIdAndUpdate(req.user._id, {
+        email: req.body.email || req.user.email,
+        subscription: req.body.subscription || req.user.subscription,
+      });
+      if (req.file) {
+        await usersModel.findByIdAndUpdate(req.user._id, {
+          avatarURL: req.file.path || req.user.avatarURL,
+        });
+      }
+      res.status(201).send("Updated successfully");
+    } catch (error) {
+      next(new CustomError(400, error.message));
+    }
   }
-  await usersModel.findByIdAndUpdate(req.user._id, {
-    email: req.body.email || req.user.email,
-    subscription: req.body.subscription || req.user.subscription,
-  });
-
-  res.status(201).send("Updated successfully");
 }
 
 function handleUserErrors(error, req, res, next) {

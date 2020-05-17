@@ -1,5 +1,7 @@
 const { Router } = require("express");
 const usersController = require("./users.controllers");
+const upload = require("../utils/multerMiddleware");
+const minifyImage = require("../utils/imageminMiddleware");
 
 const usersRouter = Router();
 
@@ -12,7 +14,9 @@ usersRouter.get(
 
 usersRouter.patch(
   "/",
+  upload.single("avatar"),
   usersController.checkToken,
+  minifyImage,
   usersController.updateCurrentUser,
   usersController.handleUserErrors
 );
