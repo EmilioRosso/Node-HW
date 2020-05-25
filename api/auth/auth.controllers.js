@@ -3,11 +3,9 @@ const Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const otpGenerator = require("otp-generator");
+import { authenticator } from "otplib";
 const nodemailer = require("nodemailer");
-
 const CustomError = require("../utils/errors");
-const otpControllers = require("../otp/otp.controllers");
 
 require("dotenv").config();
 
@@ -57,12 +55,7 @@ async function registerUser(req, res, next) {
       const costFactor = 4;
       password = await bcrypt.hash(password, costFactor);
 
-      const otpCode = otpGenerator.generate(4, {
-        digits: true,
-        upperCase: false,
-        alphabets: false,
-        specialChars: false,
-      });
+      const otpCode = authenticator.generate(process.env.OTP_SECRET);
 
       const newUser = await usersModel.create({
         email,
@@ -73,8 +66,7 @@ async function registerUser(req, res, next) {
         otpCode,
       });
 
-      const emailResult = await sendOTP(email, otpCode, next);
-      console.log(emailResult);
+      const emailResult = await sendOTP(email, otpCode);
 
       res.status(201).json({
         id: newUser._id,
