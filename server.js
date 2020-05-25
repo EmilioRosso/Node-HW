@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const usersRouter = require("./api/users/users.routers");
 const authRouter = require("./api/auth/auth.routers");
 const contactsRouter = require("./api/contacts/contacts.router");
+const otpRouter = require("./api/otp/otp.routers");
 
 require("dotenv").config();
 
@@ -28,6 +29,7 @@ class ContactsServer {
     this.server.use("/contacts", contactsRouter);
     this.server.use("/auth", authRouter);
     this.server.use("/users", usersRouter);
+    this.server.use("/otp", otpRouter);
   }
 
   async initDB() {

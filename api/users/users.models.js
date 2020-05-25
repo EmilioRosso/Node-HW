@@ -18,6 +18,8 @@ const usersSchema = new Schema({
   },
   avatarURL: String,
   token: String,
+  otpCode: Number,
+  registered: { type: Boolean, default: false },
 });
 
 const usersModel = mongoose.model("Users", usersSchema);
